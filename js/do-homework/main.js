@@ -24,7 +24,7 @@ function hienThiTable(mangNV) {
        }
 
        content += `<td><button class="btn btn-danger" onclick = "xoaNhanVien('${nv.maNV}')" style = "font-size: 14px">Xóa</button>
-        <button class="btn btn-primary ml-1" onclick = "updateNhanVien('${nv.maNV}')" data-toggle="modal" data-target="#myModal" style = "font-size: 14px">Sửa</button> </td>`
+        <button class="btn btn-primary ml-1" onclick = "getNhanVien('${nv.maNV}')" data-toggle="modal" data-target="#myModal" style = "font-size: 14px">Sửa</button> </td>`
        content += "</tr>";
 
        if(index < mangNV.length - 1) {
@@ -49,7 +49,7 @@ function setLocalStorage(mangNV) {
 function getLocalStorage() {
     if(localStorage.getItem("BT_DSNV") !== null) {
         dsnv.mangNV = JSON.parse(localStorage.getItem("BT_DSNV"));
-        console.log(dsnv.mangNV)
+        // console.log(dsnv.mangNV)
         hienThiTable(dsnv.mangNV);
 
     }
@@ -141,16 +141,17 @@ function themNhanVien() {
 
      //-----trường giờ làm-------
      isValid &= validation.checkEmpty(gioLam, "tbGiolam", "Bạn chưa nhập giờ làm")
-     && validation.checkGioLam(gioLam, "tbGiolam", "Giờ làm trong tháng phải từ 80 - 200 giờ");
+     && validation.checkGioLam(gioLam, "tbGiolam", "Giờ làm trong tháng phải là số nguyên từ 80 - 200 giờ");
 
 
 
     if(isValid) {
    
-        var newNhanVien = new NhanVien(maNV, tenNV, email, password, ngayLam, parseFloat(luongCB), chucVu, parseFloat(gioLam));
+        var newNhanVien = new NhanVien(maNV, tenNV, email, password, ngayLam, parseInt(luongCB), chucVu, gioLam);
+        // console.log("newNhanVien",newNhanVien)
         newNhanVien.tinhTongLuong();
         newNhanVien.xepLoaiNV();
-        console.log(newNhanVien);
+        // console.log(newNhanVien);
         dsnv.themNV(newNhanVien);
     
         hienThiTable(dsnv.mangNV);
@@ -176,7 +177,7 @@ function themNhanVien() {
     }
 
 
-    function updateNhanVien(maNV) {      //Xem thông tin cũ chứ chưa sửa
+    function getNhanVien(maNV) {      //Xem thông tin cũ chứ chưa sửa
         //B1: lấy dữ liệu của nhân viên cần sửa update lên form
         var viTri = -1;
         viTri = dsnv.timViTriNVtheoMa(maNV);
@@ -205,7 +206,8 @@ function themNhanVien() {
         }
         // C2: getEle("chucvu").value = nhanVien.chucVu;
         getEle("gioLam").value = nhanVien.gioLam;
-        openModal("Cập nhật nhân viên", 1)
+        clearSpanError();
+        openModal("Cập nhật nhân viên", 1);
     }
 
     //B2: cập nhật thông tin nhân viên vừa sửa rồi hiển thị ra giao diện
@@ -266,12 +268,12 @@ function themNhanVien() {
 
      //-----trường giờ làm-------
      isValid &= validation.checkEmpty(gioLam, "tbGiolam", "Bạn chưa nhập giờ làm")
-     && validation.checkGioLam(gioLam, "tbGiolam", "Giờ làm trong tháng phải từ 80 - 200 giờ");
+     && validation.checkGioLam(gioLam, "tbGiolam", "Giờ làm trong tháng phải là số nguyên từ 80 - 200 giờ");
 
 
      //Nếu mọi trường đúng hết thì mới cho cập nhật
         if(isValid) {
-            var nvUpdated = new NhanVien(maNV, tenNV, email, password, ngayLam, parseFloat(luongCB), chucVu, parseFloat(gioLam));
+            var nvUpdated = new NhanVien(maNV, tenNV, email, password, ngayLam, parseInt(luongCB), chucVu, gioLam);
             nvUpdated.tinhTongLuong();
             nvUpdated.xepLoaiNV();
     
@@ -312,10 +314,15 @@ getEle("btnThem").addEventListener("click", function (e) {
     getEle("tknv").disabled = false;
     getEle("formNV").reset();
     
-    var spanArray = document.querySelectorAll('#formNV span');
-    // console.log(spanArray);
+    clearSpanError();
 
-    //xỏa bỏ lỗi của người dùng khi nhập sai đinh dạng mỗi khi click vào form
+})
+
+
+clearSpanError = () => {
+    var spanArray = document.querySelectorAll('#formNV span');
+
+      //xỏa bỏ lỗi của người dùng khi nhập sai đinh dạng mỗi khi click vào form
 
     //C1------Dùng thuộc tính ID
     // for(let spanItem of spanArray) {
@@ -335,7 +342,4 @@ getEle("btnThem").addEventListener("click", function (e) {
             spanItem.style.display = "none";
         }
     }
-
-})
-
-
+}

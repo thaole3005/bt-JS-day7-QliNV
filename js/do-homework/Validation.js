@@ -144,7 +144,9 @@ function Validation() {
 
 
     this.checkGioLam = function(inpuVal, spanID, message) {
-        if (parseFloat(inpuVal) >= 80 && parseFloat(inpuVal) <= 200) {
+        var inpuVal = parseFloat(inpuVal);
+        // console.log("inputVal",inpuVal)
+        if (parseFloat(inpuVal) >= 80 && parseFloat(inpuVal) <= 200 && Number.isInteger(inpuVal)) {
             // console.log("TH TRUE")
               //hợp lệ
               getEle(spanID).innerHTML = "";

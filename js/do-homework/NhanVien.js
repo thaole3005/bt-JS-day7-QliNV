@@ -41,6 +41,7 @@ function NhanVien(maNV, tenNV, email, password, ngayLam, luongCB, chucVu, gioLam
     };
 
     this.xepLoaiNV = function() {
+        // console.log("gioLam", this.gioLam)
         if(this.gioLam >= 192) {
             this.loaiNV = "Xuất sắc";
         } else if(this.gioLam >= 176 && this.gioLam < 192) {
